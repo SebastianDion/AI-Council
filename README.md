@@ -2,7 +2,7 @@
 
 A multi-agent decision support skill for Claude Code, Antigravity, and AI coding assistants. Inspired by PewDiePie's AI Council and the Diverse Multi-Agent Debate (DMAD) framework.
 
-Instead of getting a single generic AI opinion, **AI-Council** convenes a panel of 5 independent advisors who debate, peer-review each other blind, and synthesize an actionable verdict.
+Instead of getting a single generic AI opinion or an unverified echo-chamber, **AI-Council** runs a rigorous deliberation pipeline: independent takes → blind peer review → evidence ledger & red-team challenge → Chairman synthesis.
 
 ---
 
@@ -10,15 +10,15 @@ Instead of getting a single generic AI opinion, **AI-Council** convenes a panel 
 
 | Seat | Member | Archetype | Core Focus |
 |---|---|---|---|
-| 1 | **🦇 Batman** | Chief Strategist & Devil's Advocate | Risk management, worst-case scenarios, contingency planning |
+| 1 | **🦇 Batman** | Chief Strategist & Devil's Advocate | Worst-case analysis, hidden risks, contingency planning |
 | 2 | **📖 Kakashi Hatake** | Chief Learning Officer & Mentor | Sustainable growth, mental adaptability, long-term mastery |
-| 3 | **⚡ Tony Stark** | CTO & Opportunity Hunter | Execution, prototypes, leverage, bias-to-action |
-| 4 | **🎯 Domain Specialist** | Rotating Expert | Dynamically chosen based on topic (finance, tech, career, etc.) |
+| 3 | **⚡ Tony Stark** | CTO & Opportunity Hunter | Execution leverage, prototypes, speed, asymmetrical upside |
+| 4 | **🎯 Domain Specialist** | Rotating Expert | Dynamically chosen based on topic (finance, systems, career, etc.) |
 | 5 | **👀 The Outsider** | Deliberate Naive Observer | Asks simple/critical questions, cuts through jargon & groupthink |
 
 ---
 
-## How It Works
+## How It Works (Reliability Architecture)
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -26,35 +26,45 @@ Instead of getting a single generic AI opinion, **AI-Council** convenes a panel 
 └──────────────────────┬──────────────────────┘
                        │
           ┌────────────▼────────────┐
-          │  PHASE 1: INDEPENDENT   │
+          │  STEP 0: PRE-FLIGHT     │
+          │  Check runtime support  │
+          │  & clarify unknowns     │
+          └────────────┬────────────┘
+                       │
+          ┌────────────▼────────────┐
+          │  STEP 1: INDEPENDENT    │
           │  5 parallel subagents   │
-          │  give uncontaminated    │
-          │  perspectives           │
+          │  give takes + evidence  │
+          │  + confidence (1-10)    │
           └────────────┬────────────┘
                        │
           ┌────────────▼────────────┐
-          │  PHASE 2: PEER REVIEW   │
-          │  Each advisor critiques │
-          │  the other 4 takes      │
-          │  blindly/anonymously    │
+          │  STEP 2: PEER REVIEW    │
+          │  Advisors critique anon │
+          │  takes; defend dissent  │
           └────────────┬────────────┘
                        │
           ┌────────────▼────────────┐
-          │  PHASE 3: CHAIRMAN      │
-          │  Main agent synthesizes │
-          │  verdict + vote tally   │
+          │  STEP 3: RED-TEAM &     │
+          │  EVIDENCE SYNTHESIS     │
+          │  Chairman weighs facts, │
+          │  red-teams the winner,  │
+          │  sets next action       │
           └─────────────────────────┘
 ```
 
-1. **Phase 1 (Independent Takes):** 5 parallel subagents analyze the question without seeing each other's responses.
-2. **Phase 2 (Blind Peer Review):** Advisors inspect anonymized arguments from the other 4 seats and revise or defend their stances.
-3. **Phase 3 (Chairman Synthesis):** The main agent reports the verdict, consensus/dissent vote tally, key tension points, and collapsed summaries.
+### Why This Avoids Typical AI Flaws:
+- **No Echo-Chamber / False Consensus:** A 5/5 vote is not proof. Arguments are weighed by evidence quality, not popularity.
+- **Evidence Ledger:** Clearly distinguishes *verified facts* from *unstated assumptions* and *unpredictables*.
+- **Pre-Flight Clarification:** If a critical variable (e.g. runway, constraints) is missing, the council asks 1 concise question instead of burning tokens hallucinating answers.
+- **Red-Team Challenge:** The leading recommendation is intentionally stress-tested with failure modes before final approval.
+- **Anti-Overplanning (Execution Protocol):** The output always concludes with an immediate first action (next 24 hours), review milestones, and a kill/pivot condition.
 
 ---
 
 ## Triggers
 
-Invoke the council in chat whenever you have a hard decision or want multiple angles:
+Invoke the council in chat whenever you have a hard decision or need multi-angle stress-testing:
 
 - `JARVIS, ASSEMBLE`
 - `council this`
@@ -87,14 +97,15 @@ git clone https://github.com/SebastianDion/AI-Council.git .agents/skills/council
 
 ## How to Tweak & Customize
 
-Everything is defined in [`SKILL.md`](./SKILL.md). You can customize:
+Everything is defined in [`SKILL.md`](./SKILL.md):
 
 1. **User Context / Profile:**
    - Edit the `## User context` block in `SKILL.md` to tailor advice to your background, goals, tech stack, and tendencies.
 2. **Fixed Council Members:**
-   - Swap Batman, Kakashi, or Tony Stark with any characters or archetypes you prefer. Keep the format with `Personality`, `Signature`, and `Flaw to role-play`.
-3. **Subagent Models:**
-   - Defaults to `flash` for fast, lightweight advisor responses. Can be switched to `inherit` or `pro` for deeper analysis.
+   - Swap Batman, Kakashi, or Tony Stark with any characters or archetypes you prefer. Keep the format with `Personality`, `Signature`, and `Flaw`.
+3. **Execution Mode:**
+   - Uses `flash` subagents by default for high speed and minimal cost.
+   - Automatically discloses simulated execution if running inside environments without subagent tools.
 4. **Trigger Phrases:**
    - Add custom keywords or your own slash commands under `## When to activate`.
 
